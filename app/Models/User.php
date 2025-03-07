@@ -34,6 +34,15 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    public function persons()
+    {
+        return $this->hasMany(Person::class);
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
 
     /**
      * Get the attributes that should be cast.
