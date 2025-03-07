@@ -20,3 +20,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+use App\Livewire\OrganizationalUnits\CreateOrganizationalUnits;
+
+Route::get('/create-organizational-units', CreateOrganizationalUnits::class)
+    ->name('organizational-units.create');
