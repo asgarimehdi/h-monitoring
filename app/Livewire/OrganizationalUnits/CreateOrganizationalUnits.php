@@ -23,6 +23,13 @@ class CreateOrganizationalUnits extends Component
     public $provinces;   // لیست استان‌ها
     public $counties;    // لیست شهرستان‌ها
     public $parentUnits; // تمام واحدهای سازمانی (برای انتخاب والد)
+    public function updatedProvinceId($value)
+    {
+        $this->county_id = null; // ریست کردن انتخاب شهرستان
+        $this->counties = County::where('province_id', $value)->get();
+    }
+
+
 
     public function mount()
     {

@@ -31,19 +31,23 @@
             @endforeach
         </flux:select>
 
-        <flux:select wire:model="province_id" label="Province">
+        <flux:select wire:model.live="province_id" label="Province">
             <option value="">Select a Province</option>
             @foreach($provinces as $province)
                 <option value="{{ $province->id }}">{{ $province->name }}</option>
             @endforeach
         </flux:select>
 
-        <flux:select wire:model="county_id" label="County">
-            <option value="">Select a County</option>
-            @foreach($counties as $county)
-                <option value="{{ $county->id }}">{{ $county->name }}</option>
-            @endforeach
-        </flux:select>
+       <flux:select wire:model.live="county_id" label="County">
+    @if($province_id)
+        <option value="">Select a County</option>
+        @foreach($this->counties as $county)
+            <option value="{{ $county->id }}">{{ $county->name }}</option>
+        @endforeach
+    @else
+        <option value="">Select a Province first</option>
+    @endif
+</flux:select>
 
         <!-- انتخاب واحد والد با استفاده از property محاسبه شده -->
         <flux:select wire:model="parent_id" label="Parent Unit">
