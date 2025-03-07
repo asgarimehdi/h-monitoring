@@ -78,7 +78,7 @@ class CreateOrganizationalUnits extends Component
     public function createUnit()
     {
         $this->validate([
-            'name'         => 'required|string|max:255',
+            'name'         => 'required|string|max:255|unique:organizational_units,name',
             'unit_type_id' => 'required|exists:unit_types,id',
             'province_id'  => 'nullable|exists:provinces,id',
             'county_id'    => 'nullable|exists:counties,id',
