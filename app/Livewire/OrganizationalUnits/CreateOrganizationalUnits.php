@@ -23,12 +23,17 @@ class CreateOrganizationalUnits extends Component
     public $provinces;   // لیست استان‌ها
     public $counties;    // لیست شهرستان‌ها
     public $parentUnits; // تمام واحدهای سازمانی (برای انتخاب والد)
+
     public function updatedProvinceId($value)
     {
         $this->county_id = null; // ریست کردن انتخاب شهرستان
         $this->counties = County::where('province_id', $value)->get();
+        //  $this->parentUnits= OrganizationalUnit::where('province_id', $value)->get();
     }
-
+    public function updatedUnitTypeId()
+    {
+        $this->reset(['province_id', 'county_id', 'parent_id']);
+    }
 
 
     public function mount()
@@ -51,19 +56,24 @@ class CreateOrganizationalUnits extends Component
      */
     public function getAllowedParentUnitsProperty()
     {
-        if (!$this->unit_type_id) {
-            return OrganizationalUnit::all();
+        $query = OrganizationalUnit::query();
+
+        if ($this->unit_type_id) {
+            $selectedType = UnitType::find($this->unit_type_id);
+            if ($selectedType) {
+                // دریافت شناسه‌های انواع والد مجاز برای نوع انتخاب شده
+                $allowedParentTypeIds = $selectedType->allowedParentTypes->pluck('id')->toArray();
+                $query->whereIn('unit_type_id', $allowedParentTypeIds);
+            }
         }
 
-        $selectedType = UnitType::find($this->unit_type_id);
-        if (!$selectedType) {
-            return OrganizationalUnit::all();
+        if ($this->province_id) {
+            $query->where('province_id', $this->province_id);
         }
-        // دریافت شناسه‌های انواع والد مجاز برای نوع انتخاب شده
-        $allowedParentTypeIds = $selectedType->allowedParentTypes->pluck('id')->toArray();
 
-        return OrganizationalUnit::whereIn('unit_type_id', $allowedParentTypeIds)->get();
+        return $query->get();
     }
+
 
     public function createUnit()
     {
@@ -75,17 +85,17 @@ class CreateOrganizationalUnits extends Component
             'parent_id'    => 'nullable|exists:organizational_units,id',
         ]);
 
-        // اعتبارسنجی اضافی: اگر واحد والد انتخاب شده است، مطمئن شویم نوع آن مجاز است
-        if ($this->parent_id) {
-            $parentUnit = OrganizationalUnit::find($this->parent_id);
-            $selectedType = UnitType::find($this->unit_type_id);
-            $allowedParentTypeIds = $selectedType->allowedParentTypes->pluck('id')->toArray();
-            if (! in_array($parentUnit->unit_type_id, $allowedParentTypeIds)) {
-                $this->addError('parent_id', 'انتخاب واحد والد مجاز نیست.');
-                return;
-            }
-        }
-      //  dd($this->unit_type_id);
+        // // اعتبارسنجی اضافی: اگر واحد والد انتخاب شده است، مطمئن شویم نوع آن مجاز است
+        // if ($this->parent_id) {
+        //     $parentUnit = OrganizationalUnit::find($this->parent_id);
+        //     $selectedType = UnitType::find($this->unit_type_id);
+        //     $allowedParentTypeIds = $selectedType->allowedParentTypes->pluck('id')->toArray();
+        //     if (! in_array($parentUnit->unit_type_id, $allowedParentTypeIds)) {
+        //         $this->addError('parent_id', 'انتخاب واحد والد مجاز نیست.');
+        //         return;
+        //     }
+        // }
+        //  dd($this->unit_type_id);
         OrganizationalUnit::create([
             'name'          => $this->name,
             'description'   => $this->description,

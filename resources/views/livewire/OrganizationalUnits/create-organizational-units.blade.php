@@ -24,7 +24,7 @@
         />
 
         <!-- فیلد انتخاب نوع واحد (داده از جدول unit_types) -->
-        <flux:select wire:model="unit_type_id" label="Unit Type">
+        <flux:select wire:model.live="unit_type_id" label="Unit Type">
             <option value="">Select a Unit Type</option>
             @foreach($unitTypes as $type)
                 <option value="{{ $type->id }}">{{ $type->name }}</option>
@@ -51,13 +51,16 @@
 
         <!-- انتخاب واحد والد با استفاده از property محاسبه شده -->
         <flux:select wire:model="parent_id" label="Parent Unit">
+             @if($province_id &&$unit_type_id)
             <option value="">No Parent</option>
            @foreach($this->allowedParentUnits as $unit)
     <option value="{{ $unit->id }}">
         {{ $unit->name }} ({{ optional($unit->unitType)->name ?? '-' }})
     </option>
 @endforeach
-
+ @else
+        <option value="">Select a Province and Unit Type first</option>
+    @endif
         </flux:select>
 
         <flux:button type="submit" variant="primary" class="w-full">
