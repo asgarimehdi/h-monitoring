@@ -23,6 +23,14 @@
             placeholder="Enter description"
         />
 
+        <!-- فیلد انتخاب نوع واحد (داده از جدول unit_types) -->
+        <flux:select wire:model="unit_type_id" label="Unit Type">
+            <option value="">Select a Unit Type</option>
+            @foreach($unitTypes as $type)
+                <option value="{{ $type->id }}">{{ $type->name }}</option>
+            @endforeach
+        </flux:select>
+
         <flux:select wire:model="province_id" label="Province">
             <option value="">Select a Province</option>
             @foreach($provinces as $province)
@@ -37,11 +45,15 @@
             @endforeach
         </flux:select>
 
+        <!-- انتخاب واحد والد با استفاده از property محاسبه شده -->
         <flux:select wire:model="parent_id" label="Parent Unit">
             <option value="">No Parent</option>
-            @foreach($parentUnits as $unit)
-                <option value="{{ $unit->id }}">{{ $unit->name }}</option>
-            @endforeach
+           @foreach($this->allowedParentUnits as $unit)
+    <option value="{{ $unit->id }}">
+        {{ $unit->name }} ({{ optional($unit->unitType)->name ?? '-' }})
+    </option>
+@endforeach
+
         </flux:select>
 
         <flux:button type="submit" variant="primary" class="w-full">
@@ -56,6 +68,7 @@
             <thead>
                 <tr class="border-b">
                     <th class="px-4 py-2 text-left">Name</th>
+                    <th class="px-4 py-2 text-left">Type</th>
                     <th class="px-4 py-2 text-left">Province</th>
                     <th class="px-4 py-2 text-left">County</th>
                     <th class="px-4 py-2 text-left">Parent Unit</th>
@@ -65,6 +78,7 @@
                 @foreach($units as $unit)
                     <tr class="border-b">
                         <td class="px-4 py-2">{{ $unit->name }}</td>
+                        <td class="px-4 py-2">{{ $unit->unitType ? $unit->unitType->name : '-' }}</td>
                         <td class="px-4 py-2">
                             {{ $unit->province ? $unit->province->name : '-' }}
                         </td>
@@ -72,7 +86,7 @@
                             {{ $unit->county ? $unit->county->name : '-' }}
                         </td>
                         <td class="px-4 py-2">
-                            {{ $unit->parent ? $unit->parent->name : '-' }}
+                            {{ $unit->parent ? $unit->parent->name . ' (' . ($unit->parent->unitType ? $unit->parent->unitType->name : '-') . ')' : '-' }}
                         </td>
                     </tr>
                 @endforeach

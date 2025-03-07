@@ -11,8 +11,14 @@ class OrganizationalUnit extends Model
         'description',
         'province_id',
         'county_id',
-        'parent_id'
+        'parent_id',
+        'unit_type_id',
+
     ];
+    public function unitType()
+    {
+        return $this->belongsTo(UnitType::class);
+    }
 
     // اگر این واحد در سطح استان باشد
     public function province()
