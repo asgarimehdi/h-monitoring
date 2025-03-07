@@ -84,30 +84,27 @@ class CreateOrganizationalUnits extends Component
             'county_id'    => 'nullable|exists:counties,id',
             'parent_id'    => 'nullable|exists:organizational_units,id',
         ]);
+        if ($this->county_id == "") {
+            $this->county_id = null;
+        }
+        if ($this->parent_id == null && $this->unit_type_id == 1) {
+            OrganizationalUnit::create([
+                'name'          => $this->name,
+                'description'   => $this->description,
+                'unit_type_id'  => $this->unit_type_id,
+                'province_id'   => $this->province_id,
+                'county_id'     => $this->county_id,
+                'parent_id'     => $this->parent_id,
+            ]);
 
-        // // اعتبارسنجی اضافی: اگر واحد والد انتخاب شده است، مطمئن شویم نوع آن مجاز است
-        // if ($this->parent_id) {
-        //     $parentUnit = OrganizationalUnit::find($this->parent_id);
-        //     $selectedType = UnitType::find($this->unit_type_id);
-        //     $allowedParentTypeIds = $selectedType->allowedParentTypes->pluck('id')->toArray();
-        //     if (! in_array($parentUnit->unit_type_id, $allowedParentTypeIds)) {
-        //         $this->addError('parent_id', 'انتخاب واحد والد مجاز نیست.');
-        //         return;
-        //     }
-        // }
-        //  dd($this->unit_type_id);
-        OrganizationalUnit::create([
-            'name'          => $this->name,
-            'description'   => $this->description,
-            'unit_type_id'  => $this->unit_type_id,
-            'province_id'   => $this->province_id,
-            'county_id'     => $this->county_id,
-            'parent_id'     => $this->parent_id,
-        ]);
+            $this->reset(['name', 'description', 'unit_type_id', 'province_id', 'county_id', 'parent_id']);
+            $this->loadData();
+            session()->flash('message', 'Organizational Unit created successfully.');
+        } elseif ($this->parent_id == null) {
 
-        $this->reset(['name', 'description', 'unit_type_id', 'province_id', 'county_id', 'parent_id']);
-        $this->loadData();
-        session()->flash('message', 'Organizational Unit created successfully.');
+            $this->addError('parent_id', 'انتخاب واحد والد خالی مجاز نیست.');
+            return;
+        }
     }
 
     public function render()
