@@ -19,7 +19,11 @@ return new class extends Migration
             $table->unsignedBigInteger('county_id')->nullable();
             // برای ساختار سلسله مراتب
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->string('name');
+            $table->string('name')->unique();;
+            // افزودن ستون unit_type_id
+            $table->unsignedBigInteger('unit_type_id')->nullable();
+            $table->foreign('unit_type_id')->references('id')->on('unit_types')->onDelete('set null');
+
             $table->text('description')->nullable();
             $table->timestamps();
 

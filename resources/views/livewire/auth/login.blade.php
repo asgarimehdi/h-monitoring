@@ -15,7 +15,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     // #[Validate('required|string|email')]
     // public string $email = '';
     #[Validate('required|string')]
-    public string $username = '';
+    public string $n_code = '';
 
     #[Validate('required|string')]
     public string $password = '';
@@ -38,7 +38,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
         //         'email' => __('auth.failed'),
         //     ]);
         // }
-        if (! Auth::attempt(['username' => $this->username, 'password' => $this->password], $this->remember)) {
+        if (! Auth::attempt(['n_code' => $this->n_code, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -71,7 +71,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
         //     ]),
         // ]);
         throw ValidationException::withMessages([
-            'username' => __('auth.throttle', [
+            'n_code' => __('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -84,7 +84,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     protected function throttleKey(): string
     {
         // return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
-           return Str::transliterate(Str::lower($this->username).'|'.request()->ip());
+           return Str::transliterate(Str::lower($this->n_code).'|'.request()->ip());
 
     }
 }; ?>
@@ -143,21 +143,21 @@ new #[Layout('components.layouts.auth')] class extends Component {
     @endif
 </div> --}}
 <div class="flex flex-col gap-6">
-    <x-auth-header title="Log in to your account" description="Enter your username and password below to log in" />
+    <x-auth-header title="Log in to your account" description="Enter your n_code and password below to log in" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
     <form wire:submit="login" class="flex flex-col gap-6">
-        <!-- Username Field -->
+        <!-- n_code Field -->
         <flux:input
-            wire:model="username"
-            :label="__('Username')"
+            wire:model="n_code"
+            :label="__('N_code')"
             type="text"
-            name="username"
+            name="n_code"
             required
             autofocus
-            placeholder="yourusername"
+            placeholder="your n_code"
         />
 
         <!-- Password Field -->

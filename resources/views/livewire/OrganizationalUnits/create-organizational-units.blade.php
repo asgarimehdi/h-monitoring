@@ -50,7 +50,7 @@
 </flux:select>
 
         <!-- انتخاب واحد والد با استفاده از property محاسبه شده -->
-        <flux:select wire:model="parent_id" label="Parent Unit">
+        {{-- <flux:select wire:model="parent_id" label="Parent Unit">
              @if($province_id &&$unit_type_id)
             <option value="">No Parent</option>
            @foreach($this->allowedParentUnits as $unit)
@@ -61,7 +61,19 @@
  @else
         <option value="">Select a Province and Unit Type first</option>
     @endif
-        </flux:select>
+        </flux:select> --}}
+<flux:select wire:model="parent_id" label="Parent Unit">
+    @if($province_id && $unit_type_id)
+        <option value="">No Parent</option>
+        @foreach($this->allowedParentUnits as $unit)
+            <option value="{{ $unit->id }}">
+                {{ $unit->name }} ({{ optional($unit->unitType)->name ?? '-' }})
+            </option>
+        @endforeach
+    @else
+        <option value="">Select a Province and Unit Type first</option>
+    @endif
+</flux:select>
 
         <flux:button type="submit" variant="primary" class="w-full">
             Create Unit
