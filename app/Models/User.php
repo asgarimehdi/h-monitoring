@@ -21,7 +21,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
 
-        'person_id',
+        'n_code',
         'password',
     ];
 
@@ -49,7 +49,7 @@ class User extends Authenticatable
     }
     public function person(): BelongsTo
     {
-        return $this->belongsTo(Person::class, 'person_id');
+        return $this->belongsTo(Person::class, 'n_code');
     }
 
     /**
