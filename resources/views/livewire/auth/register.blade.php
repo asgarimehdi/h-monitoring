@@ -9,8 +9,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.auth')] class extends Component {
-    public string $f_name = '';
-    public string $l_name = '';
+    public string $n_code = '';
+
     public string $password = '';
     public string $password_confirmation = '';
 
@@ -20,9 +20,9 @@ new #[Layout('components.layouts.auth')] class extends Component {
     public function register(): void
     {
         $validated = $this->validate([
-            'f_name' => ['required', 'string', 'max:255'],
-            'l_name' => ['required', 'string', 'max:255'],
-            'person_id' => ['required', 'int', 'lowercase', 'email', 'max:4', 'unique:' . User::class],
+//            'f_name' => ['required', 'string', 'max:255'],
+//            'l_name' => ['required', 'string', 'max:255'],
+            'n_code' => ['required', 'string', 'digits:10', 'unique:' . User::class . ',n_code'],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -44,28 +44,18 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
     <form wire:submit="register" class="flex flex-col gap-6">
         <!-- Name -->
-        <flux:input
-            wire:model="name"
-            id="name"
-            :label="__('Name')"
-            type="text"
-            name="name"
-            required
-            autofocus
-            autocomplete="name"
-            placeholder="Full name"
-        />
+
 
         <!-- Email Address -->
         <flux:input
-            wire:model="email"
-            id="email"
-            :label="__('Email address')"
-            type="email"
-            name="email"
+            wire:model="n_code"
+            id="n_code"
+            :label="__('n_code')"
+            type="text"
+            name="n_code"
             required
-            autocomplete="email"
-            placeholder="email@example.com"
+            autocomplete="n_code"
+            placeholder="1234567890"
         />
 
         <!-- Password -->

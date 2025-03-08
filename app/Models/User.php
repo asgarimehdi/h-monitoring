@@ -3,8 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -47,16 +49,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function person(): BelongsTo
+    public function person(): hasOne
     {
-        return $this->belongsTo(Person::class, 'n_code');
+        return $this->hasOne(Person::class, 'n_code','n_code');
     }
 
     /**
      * Get the user's initials
      */
-    public function name(): string
+    protected function name(): Attribute
     {
-        return Str::of($this->person()->f_name).' '.Str::of($this->person()->l_name);
+        return Attribute::make(
+            get: fn () => $this->person->f_name . ' ' . $this->person->l_name,
+        );
     }
+//
 }
