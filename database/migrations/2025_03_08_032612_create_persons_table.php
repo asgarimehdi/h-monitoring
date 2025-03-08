@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('persons', function (Blueprint $table) {
             $table->id();
-            $table->string('n_code')->unique()->index(); // code melli
+            $table->string('n_code',10)->unique()->index(); // code melli
             $table->string('f_name');
             $table->string('l_name');
             $table->foreignId('t_id'); //tahsilat
