@@ -13,8 +13,26 @@ return new class extends Migration
     {
         Schema::create('units', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            // فیلد province_id برای واحدهایی که به سطح استان تعلق دارند
+            $table->unsignedBigInteger('province_id')->nullable();
+            // فیلد county_id برای واحدهایی که به شهرستان تعلق دارند
+            $table->unsignedBigInteger('county_id')->nullable();
+            // برای ساختار سلسله مراتب
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->string('name')->unique();;
+            // افزودن ستون unit_type_id
+            $table->unsignedBigInteger('unit_type_id')->nullable();
+            $table->foreign('unit_type_id')->references('id')->on('unit_types')->onDelete('set null');
+
+            $table->text('description')->nullable();
             $table->timestamps();
+
+            // تعریف کلید خارجی به استان‌ها
+            $table->foreign('province_id')->references('id')->on('provinces')->onDelete('cascade');
+            // تعریف کلید خارجی به شهرستان‌ها
+            $table->foreign('county_id')->references('id')->on('counties')->onDelete('cascade');
+            // تعریف کلید خارجی برای سلسله مراتب واحدها
+            $table->foreign('parent_id')->references('id')->on('units')->onDelete('cascade');
         });
     }
 
