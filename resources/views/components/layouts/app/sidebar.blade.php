@@ -16,6 +16,8 @@
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                     <flux:navlist.item icon="home" :href="route('units.create')" :current="request()->routeIs('units.create')" wire:navigate>{{ __('unitsCreate') }}</flux:navlist.item>
 
+
+                    <flux:navlist.item icon="home" :href="route('kargozini.Estekhdam')" :current="request()->routeIs('kargozini.Estekhdam')" wire:navigate>{{ __('Estekhdam') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
@@ -53,7 +55,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item href="/settings/profile" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+                        <flux:menu.item href="/settings/password" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />

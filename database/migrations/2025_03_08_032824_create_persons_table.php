@@ -22,6 +22,8 @@ return new class extends Migration
             $table->foreignId('r_id'); //radif sazmani
             $table->foreignId('u_id'); //unit = vahed
             $table->timestamps();
+
+            //$table->foreign('e_id')->references('id')->on('estekhdams')->onDelete('cascade');
         });
     }
 
