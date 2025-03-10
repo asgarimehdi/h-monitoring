@@ -23,6 +23,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class, // اضافه کردن UserSeeder به لیست
             PersonSeeder::class,
+            ProvinceSeeder::class,
+            CountySeeder::class,
+            UnitTypeSeeder::class,
+            UnitTypeRelationshipSeeder::class,
+            UnitSeeder::class,
             // سایر Seeder ها
         ]);
     }
