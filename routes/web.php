@@ -23,3 +23,4 @@ Route::middleware(['auth'])->group(function () {
 require __DIR__ . '/auth.php';
 
 Volt::route('units/create', 'create-units')->name('units.create');
+Volt::route('units/chart', 'chart-units')->name('units.chart');
