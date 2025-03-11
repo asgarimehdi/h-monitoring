@@ -2,6 +2,18 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" dir="rtl">
     <head>
         @include('partials.head')
+          <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/treemap.js"></script>
+    <script src="https://code.highcharts.com/modules/treegraph.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <style>
+        #container {
+            max-width: 600px;
+            min-width: 360px;
+            margin: 0 auto;
+        }
+    </style>
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
         <flux:sidebar sticky stashable class="border-r border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
@@ -15,8 +27,7 @@
                 <flux:navlist.group heading="Platform" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                     <flux:navlist.item icon="home" :href="route('units.create')" :current="request()->routeIs('units.create')" wire:navigate>{{ __('unitsCreate') }}</flux:navlist.item>
-
-
+                    <flux:navlist.item icon="home" :href="route('units.chart')" :current="request()->routeIs('units.chart')" wire:navigate>{{ __('unitsChart') }}</flux:navlist.item>
                     <flux:navlist.item icon="home" :href="route('kargozini.Estekhdam')" :current="request()->routeIs('kargozini.Estekhdam')" wire:navigate>{{ __('Estekhdam') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>

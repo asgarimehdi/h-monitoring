@@ -21,7 +21,6 @@ new class extends Component {
     public $provinces;   // لیست استان‌ها
     public $counties;    // لیست شهرستان‌ها
     public $parentUnits; // تمام واحدهای سازمانی (برای انتخاب والد)
-
     public function updatedProvinceId($value)
     {
         $this->county_id = null; // ریست کردن انتخاب شهرستان
@@ -48,7 +47,6 @@ new class extends Component {
         $this->parentUnits = Unit::all();
         // $this->unitTypes = UnitType::all();
         $this->unitTypes = UnitType::where('id', '!=', 1)->get();
-
     }
  
 public function getAllowedParentUnitsProperty()
