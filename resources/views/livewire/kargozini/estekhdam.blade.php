@@ -73,14 +73,14 @@ new class extends Component {
 ?>
 
 <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-    <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-        <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 font-bold">
+    <div class="grid auto-rows-min gap-4 md:grid-cols-3 sm:grid-cols-2 h-30">
+        <div class="relative  overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 font-bold">
             مدیریت وضعیت‌های استخدام
         </div>
 
-        <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 font-bold">
+        <div class="relative  overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 font-bold">
             <flux:modal.trigger name="create-estekhdam">
-                <flux:button icon="plus" variant="primary">ایجاد وضعیت استخدام جدید</flux:button>
+                <flux:button icon="plus" variant="primary" class="w-full">ایجاد وضعیت استخدام جدید</flux:button>
             </flux:modal.trigger>
 
             <flux:modal name="create-estekhdam" class="md:w-96">
@@ -88,14 +88,14 @@ new class extends Component {
                     <form wire:submit.prevent="createEstekhdam" class="space-y-4">
                         <flux:input
                             wire:model="name"
-                            label="Estekhdam Name"
-                            placeholder="Enter Estekhdam name"
+                            label="Estekhdam title"
+                            placeholder="عنوان"
                             required
                         />
                         <div class="flex">
                             <flux:spacer />
                             <flux:button type="submit" variant="primary" class="w-full">
-                                Create Estekhdam
+                                ایجاد وضعیت استخدام جدید
                             </flux:button>
                         </div>
                     </form>
@@ -104,45 +104,45 @@ new class extends Component {
         </div>
 
         @if (session()->has('message'))
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 font-bold  bg-green-100 text-green-800">
+            <div class="relative  overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 font-bold  bg-green-100 text-green-800">
                 {{ session('message') }}
             </div>
         @endif
     </div>
 
-    <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+    <div class="relative h-full flex  items-center justify-center  overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden max-w-screen-lg  md:w-3/5  h-8/12">
             <div class="overflow-x-auto">
                 <flux:input  wire:model.live="search" placeholder="جستجو..." class="w-full"/>
-                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <table class="w-full text-sm text-right text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-4 py-3">ردیف</th>
-                        <th scope="col" class="px-4 py-3">نام</th>
-                        <th scope="col" class="px-4 py-3">عملیات</th>
+                        <th scope="col" class="px-4 py-3 w-15 border-r">ردیف</th>
+                        <th scope="col" class="px-4 py-3 border-r">نام</th>
+                        <th scope="col" class="px-4 py-3 w-28 border-r">عملیات</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($estekhdams as $estekhdam)
                         <tr wire:key="{{ $estekhdam->id }}" class="border-b dark:border-gray-700 text-right">
-                            <td class="px-4 py-3">{{ $estekhdam->id }}</td>
-                            <td class="px-4 py-3">
+                            <td class="px-4 py-3 border-r">{{ $estekhdam->id }}</td>
+                            <td class="px-4 py-3 border-r">
                                 @if ($editingId === $estekhdam->id)
-                                    <input type="text" wire:model="name" class="border rounded p-1" />
-                                    <button wire:click="updateEstekhdam" class="ml-2 text-blue-500">✔️</button>
-                                    <button wire:click="$set('editingId', null)" class="text-red-500">✖️</button>
+                                    <flux:input type="text" wire:model="name" class="border rounded p-1"/>
+                                    <flux:button wire:click="updateEstekhdam" class="ml-2 text-blue-500">✔️</flux:button>
+                                    <flux:button wire:click="$set('editingId', null)" class="text-red-500">✖️</flux:button>
                                 @else
                                     {{ $estekhdam->name }}
                                 @endif
                             </td>
-                            <td class="px-4 py-3 flex items-center justify-end">
-                                <button wire:click="editEstekhdam({{ $estekhdam->id }})" class="px-1 py-1 text-blue-500 rounded m-1">
+                            <td class="px-4 py-3 flex items-center justify-end border-r">
+                                <flux:button wire:click="editEstekhdam({{ $estekhdam->id }})" class="px-1 py-1 text-blue-500 rounded m-1">
                                     ✏️
-                                </button>
-                                <button wire:confirm="مطمئن هستید؟" wire:click="delete({{ $estekhdam->id }})"
+                                </flux:button>
+                                <flux:button wire:confirm="مطمئن هستید؟" wire:click="delete({{ $estekhdam->id }})"
                                         class="px-1 py-1 text-black rounded m-1">
                                     🗑️
-                                </button>
+                                </flux:button>
                             </td>
                         </tr>
                     @endforeach
