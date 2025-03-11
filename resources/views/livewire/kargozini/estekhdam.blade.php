@@ -9,6 +9,7 @@ new class extends Component {
 
     public $name;
     public $editingId = null;
+    public $deleteId= null;
     public $search = '';
 
     public function with(): array
@@ -20,7 +21,7 @@ new class extends Component {
         }
 
         return [
-            'estekhdams' => $query->paginate(10),
+            'estekhdams' => $query->paginate(5),
         ];
     }
 
@@ -61,6 +62,7 @@ new class extends Component {
         $estekhdam = Estekhdam::find($id);
         if ($estekhdam) {
             $estekhdam->delete();
+            $this->modal('deleteModal')->close();
         }
         session()->flash('message', 'رکورد با موفقیت حذف شد.');
 
@@ -110,14 +112,14 @@ new class extends Component {
         @endif
     </div>
 
-    <div class="relative h-full flex  items-center justify-center  overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden max-w-screen-lg  md:w-3/5  h-8/12">
+    <div class="relative h-full flex  items-center justify-center   rounded-xl border border-neutral-200 dark:border-neutral-700">
+        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg  max-w-screen-lg  md:w-3/5  h-full">
             <div class="overflow-x-auto">
                 <flux:input  wire:model.live="search" placeholder="جستجو..." class="w-full"/>
                 <table class="w-full text-sm text-right text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-4 py-3 w-15 border-r">ردیف</th>
+                        <th scope="col" class="px-4 py-3 w-15 border-r">شناسه</th>
                         <th scope="col" class="px-4 py-3 border-r">نام</th>
                         <th scope="col" class="px-4 py-3 w-28 border-r">عملیات</th>
                     </tr>
@@ -139,15 +141,38 @@ new class extends Component {
                                 <flux:button wire:click="editEstekhdam({{ $estekhdam->id }})" class="px-1 py-1 text-blue-500 rounded m-1">
                                     ✏️
                                 </flux:button>
-                                <flux:button wire:confirm="مطمئن هستید؟" wire:click="delete({{ $estekhdam->id }})"
-                                        class="px-1 py-1 text-black rounded m-1">
-                                    🗑️
-                                </flux:button>
+                                <flux:modal.trigger name="deleteModal">
+                                    <flux:button class="px-1 py-1 text-black rounded m-1" wire:click="$set('deleteId', {{ $estekhdam->id }})">
+                                        🗑️
+                                    </flux:button>
+                                </flux:modal.trigger>
+
                             </td>
                         </tr>
                     @endforeach
                     </tbody>
                 </table>
+                <flux:modal name="deleteModal" class="min-w-[22rem]">
+                    <div class="space-y-6">
+                        <div>
+                            <flux:heading size="lg">آیا مطمئن هستید؟</flux:heading>
+
+                            <flux:subheading>
+                                <p>برای حذف تائید فرمائید</p>
+                            </flux:subheading>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <flux:spacer />
+
+                            <flux:modal.close>
+                                <flux:button variant="ghost">پشیمان شدم</flux:button>
+
+                            </flux:modal.close>
+                            <flux:button   wire:click="delete({{ $deleteId }})" type="submit" variant="danger">حذف نهایی</flux:button>
+                        </div>
+                    </div>
+                </flux:modal>
                 <div class="p-4">
                     {{ $estekhdams->links() }}
                 </div>
