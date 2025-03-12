@@ -9,8 +9,11 @@ new class extends Component {
 
     public $name;
     public $editingId = null;
-    public $deleteId= null;
+    public $deleteId = null;
     public $search = '';
+
+    public string $sortBy = 'created_at';
+    public string $sortDir = 'DESC';
 
     public function with(): array
     {
@@ -21,8 +24,20 @@ new class extends Component {
         }
 
         return [
-            'estekhdams' => $query->paginate(5),
+
+            'estekhdams' => $query->orderBy($this->sortBy, $this->sortDir)->paginate(5),
         ];
+    }
+
+    public function setSortBy($sortByField)
+    {
+        if ($this->sortBy === $sortByField) { // agar haman field sort shode bod hala bar ax sort kon
+            $this->sortDir = ($this->sortDir == "ASC") ? 'DESC' : 'ASC';
+            return;
+        }
+        $this->sortBy = $sortByField;
+        $this->sortDir = 'DESC'; // pishfarz desc sort kon
+
     }
 
     public function createEstekhdam()
@@ -67,6 +82,7 @@ new class extends Component {
         session()->flash('message', 'رکورد با موفقیت حذف شد.');
 
     }
+
     public function updatedSearch()
     {
         $this->resetPage();
@@ -76,11 +92,13 @@ new class extends Component {
 
 <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
     <div class="grid auto-rows-min gap-4 md:grid-cols-3 sm:grid-cols-2 h-30">
-        <div class="relative  overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 font-bold">
+        <div
+            class="relative  overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 font-bold">
             مدیریت وضعیت‌های استخدام
         </div>
 
-        <div class="relative  overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 font-bold">
+        <div
+            class="relative  overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 font-bold">
             <flux:modal.trigger name="create-estekhdam">
                 <flux:button icon="plus" variant="primary" class="w-full">ایجاد وضعیت استخدام جدید</flux:button>
             </flux:modal.trigger>
@@ -95,7 +113,7 @@ new class extends Component {
                             required
                         />
                         <div class="flex">
-                            <flux:spacer />
+                            <flux:spacer/>
                             <flux:button type="submit" variant="primary" class="w-full">
                                 ایجاد وضعیت استخدام جدید
                             </flux:button>
@@ -106,21 +124,33 @@ new class extends Component {
         </div>
 
         @if (session()->has('message'))
-            <div class="relative  overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 font-bold  bg-green-100 text-green-800">
+            <div
+                class="relative  overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 font-bold  bg-green-100 text-green-800">
                 {{ session('message') }}
             </div>
         @endif
     </div>
 
-    <div class="relative h-full flex  items-center justify-center   rounded-xl border border-neutral-200 dark:border-neutral-700">
+    <div
+        class="relative h-full flex  items-center justify-center   rounded-xl border border-neutral-200 dark:border-neutral-700">
         <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg  max-w-screen-lg  md:w-3/5  h-full">
             <div class="overflow-x-auto">
-                <flux:input  wire:model.live="search" placeholder="جستجو..." class="w-full"/>
+                <flux:input wire:model.live="search" placeholder="جستجو..." class="w-full"/>
                 <table class="w-full text-sm text-right text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-4 py-3 w-15 border-r">شناسه</th>
-                        <th scope="col" class="px-4 py-3 border-r">نام</th>
+
+                        @include('partials.sortable-th',[
+                                   'name'=>'id',
+                                   'displayName'=>'شناسه'
+                               ])
+
+
+                        @include('partials.sortable-th',[
+                                   'name'=>'name',
+                                   'displayName'=>'نام'
+                               ])
+
                         <th scope="col" class="px-4 py-3 w-28 border-r">عملیات</th>
                     </tr>
                     </thead>
@@ -131,18 +161,22 @@ new class extends Component {
                             <td class="px-4 py-3 border-r">
                                 @if ($editingId === $estekhdam->id)
                                     <flux:input type="text" wire:model="name" class="border rounded p-1"/>
-                                    <flux:button wire:click="updateEstekhdam" class="ml-2 text-blue-500">✔️</flux:button>
-                                    <flux:button wire:click="$set('editingId', null)" class="text-red-500">✖️</flux:button>
+                                    <flux:button wire:click="updateEstekhdam" class="ml-2 text-blue-500">✔️
+                                    </flux:button>
+                                    <flux:button wire:click="$set('editingId', null)" class="text-red-500">✖️
+                                    </flux:button>
                                 @else
                                     {{ $estekhdam->name }}
                                 @endif
                             </td>
                             <td class="px-4 py-3 flex items-center justify-end border-r">
-                                <flux:button wire:click="editEstekhdam({{ $estekhdam->id }})" class="px-1 py-1 text-blue-500 rounded m-1">
+                                <flux:button wire:click="editEstekhdam({{ $estekhdam->id }})"
+                                             class="px-1 py-1 text-blue-500 rounded m-1">
                                     ✏️
                                 </flux:button>
                                 <flux:modal.trigger name="deleteModal">
-                                    <flux:button class="px-1 py-1 text-black rounded m-1" wire:click="$set('deleteId', {{ $estekhdam->id }})">
+                                    <flux:button class="px-1 py-1 text-black rounded m-1"
+                                                 wire:click="$set('deleteId', {{ $estekhdam->id }})">
                                         🗑️
                                     </flux:button>
                                 </flux:modal.trigger>
@@ -163,13 +197,14 @@ new class extends Component {
                         </div>
 
                         <div class="flex gap-2">
-                            <flux:spacer />
+                            <flux:spacer/>
 
                             <flux:modal.close>
                                 <flux:button variant="ghost">پشیمان شدم</flux:button>
 
                             </flux:modal.close>
-                            <flux:button   wire:click="delete({{ $deleteId }})" type="submit" variant="danger">حذف نهایی</flux:button>
+                            <flux:button wire:click="delete({{ $deleteId }})" type="submit" variant="danger">حذف نهایی
+                            </flux:button>
                         </div>
                     </div>
                 </flux:modal>
